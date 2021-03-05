@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CMPLACESAPP</string>
+    <string name="Mapa">Mapa</string>
+    <string name="incidencias">Incidências</string>
+    <string name="Notas">Notas</string>
+    <string name="Logout">Logout</string>
+
+</resources>
