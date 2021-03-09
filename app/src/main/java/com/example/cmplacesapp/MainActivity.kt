@@ -10,6 +10,8 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import www.sanju.motiontoast.MotionToast
 
 class MainActivity : AppCompatActivity() {
     private val sharedPrefFile = "UserLogado"
@@ -49,6 +51,13 @@ class MainActivity : AppCompatActivity() {
 
             }
             startActivity(intent2)
+        }else{
+            MotionToast.darkToast(this,"Profile Update Failed!","Teste",
+                MotionToast.TOAST_ERROR,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.LONG_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
+
         }
     }
 
