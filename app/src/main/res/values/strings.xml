@@ -4,5 +4,7 @@
     <string name="incidencias">Incidências</string>
     <string name="Notas">Notas</string>
     <string name="Logout">Logout</string>
+    <string name="Title">Titulo</string>
+    <string name="Desc">Descrição</string>
 
 </resources>

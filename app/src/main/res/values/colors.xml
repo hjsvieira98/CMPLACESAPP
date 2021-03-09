@@ -24,4 +24,9 @@
     <color name="grey">#E5E5E5</color>
     <color name="cardColor">#ffffff</color>
     <color name="textcardColor">#3f3f3f</color>
+    <color name="color1">#F1755B</color>
+    <color name="color2">#5CB187</color>
+    <color name="color3">#B05777</color>
+    <color name="color4">#EEBE5C</color>
+    <color name="color5">#8778E9</color>
 </resources>
