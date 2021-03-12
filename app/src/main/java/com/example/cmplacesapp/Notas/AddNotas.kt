@@ -27,7 +27,7 @@ class AddNotas : AppCompatActivity() {
         ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
-        val nota = Notes(null,titulo.text.toString(), descricao.text.toString(),currentDate,"")
+        val nota = Notes(null,titulo.text.toString(), descricao.text.toString(),currentDate,"","")
         db.notesDao().insertAll(nota);
         finish();
     }

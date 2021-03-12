@@ -10,6 +10,7 @@ data class Notes(
     @ColumnInfo(name = "Title") val Title: String?,
     @ColumnInfo(name = "Description") val Description: String?,
     @ColumnInfo(name = "DateAdd") val DateAdd: String?,
-    @ColumnInfo(name = "DateMod") val DateMod: String?
+    @ColumnInfo(name = "DateMod") val DateMod: String?,
+    @ColumnInfo(name = "Color") val Color: String?
 
 )
