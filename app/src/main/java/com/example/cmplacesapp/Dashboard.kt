@@ -1,5 +1,6 @@
 package com.example.cmplacesapp
 
+import android.app.ActivityOptions
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,7 +22,7 @@ class Dashboard : AppCompatActivity() {
         val Mapa = Intent(this, MapaActivity::class.java).apply {
 
         }
-        startActivity(Mapa)
+        startActivity(Mapa, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
     fun IniciaNotas (){
         val Notas = Intent(this, Notas::class.java).apply {
