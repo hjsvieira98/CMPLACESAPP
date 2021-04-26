@@ -39,6 +39,7 @@
         android:layout_marginBottom="92dp"
         android:background="@drawable/shape"
         android:text="Login"
+        android:onClick="Login"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,12 +59,13 @@
         app:srcCompat="@drawable/task_png__1600" />
 
     <Button
-        android:id="@+id/BtnRegistar"
+        android:id="@+id/Notas"
         android:layout_width="333dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:background="@drawable/shape2"
-        android:text="Registar"
+        android:text="Entrar nas Notas"
+        android:onClick="EntraNostas"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

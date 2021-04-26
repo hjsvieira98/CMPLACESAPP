@@ -6,11 +6,20 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import com.example.cmplacesapp.Notas.Notas
+import com.example.cmplacesapp.retrofit.EndPoints
+import com.example.cmplacesapp.retrofit.ServiceBuilder
+import com.example.cmplacesapp.retrofit.User
+import org.mindrot.jbcrypt.BCrypt
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import www.sanju.motiontoast.MotionToast
 
 class MainActivity : AppCompatActivity() {
@@ -19,46 +28,73 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-        val sharedPreferences: SharedPreferences = this.getSharedPreferences(sharedPrefFile,
-            Context.MODE_PRIVATE)
-        val sharedNameValue = sharedPreferences.getString("name_key","")
+        val sharedPref = this@MainActivity?.getPreferences(Context.MODE_PRIVATE) ?: return
 
-        if(sharedNameValue != ""){
-
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("username", "admin")
+        val Token = sharedPref.getString(getString(R.string.Token),"")
+        if(Token!= ""){
+            val EntraDashBoard = Intent(this@MainActivity, Dashboard::class.java).apply {
             }
-            startActivity(intent)
-            finish()
-        }else{
-
+            startActivity(EntraDashBoard)
+            finish();
         }
-        //Esconde actionbar do login
+
         supportActionBar?.hide()
 
-        //Botão login
-        val BtnL = findViewById<Button>(R.id.BtnLogin);
-        BtnL.setOnClickListener({
-            Login();
-        })
+    }
+    fun EntraNostas (view:View){
+         val EntraNotas = Intent(this, Notas::class.java).apply {
+            }
+
+            startActivity(EntraNotas)
     }
 
-    fun Login (){
+    fun Login(view: View) {
         val Username = findViewById<EditText>(R.id.username);
-        val Password = findViewById<EditText>(R.id.username);
-        if(Username.text.toString() == "Teste" && Password.text.toString() == "Teste" ){
-            val intent2 = Intent(this, Dashboard::class.java).apply {
+        val Password = findViewById<EditText>(R.id.password);
+        val request = ServiceBuilder.buildService(EndPoints::class.java)
+        val call = request.Login(Username.text.toString(),Password.text.toString())
 
+        call.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful){
+                    val c: User = response.body()!!
+                    val sharedPref = this@MainActivity.getPreferences(Context.MODE_PRIVATE) ?: return
+                    with (sharedPref.edit()) {
+                        putString(getString(R.string.Token), c.Token)
+                        commit()
+                    }
+                    MotionToast.darkToast(this@MainActivity,"Sucesso","Login efetuado com sucesso",
+                        MotionToast.TOAST_SUCCESS,
+                        MotionToast.GRAVITY_BOTTOM,
+                        MotionToast.LONG_DURATION,
+                        ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                    val EntraDashBoard = Intent(this@MainActivity, Dashboard::class.java).apply {
+                    }
+
+                    startActivity(EntraDashBoard)
+                    finish()
+                }else
+                {
+                    if (response.code() == 403 && response.message() == "login_fail") {
+                        MotionToast.darkToast(this@MainActivity,"Erro","Problema de conexão ao servidor",
+                                MotionToast.TOAST_ERROR,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                    } else {
+                        MotionToast.darkToast(this@MainActivity,"Erro","Palavra pass ou utilizador errados",
+                                MotionToast.TOAST_ERROR,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                    }
+                }
             }
-            startActivity(intent2)
-        }else{
-            MotionToast.darkToast(this,"Profile Update Failed!","Teste",
-                MotionToast.TOAST_ERROR,
-                MotionToast.GRAVITY_BOTTOM,
-                MotionToast.LONG_DURATION,
-                ResourcesCompat.getFont(this,R.font.helvetica_regular))
 
-        }
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 

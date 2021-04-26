@@ -13,28 +13,28 @@
         android:padding="16dp">
 
 
-    <EditText
-        android:id="@+id/Titulo"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="@string/Title"
-        android:inputType="text" />
+        <EditText
+            android:id="@+id/Titulo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="@string/Title"
+            android:inputType="text" />
 
-    <EditText
-        android:id="@+id/Descicao"
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:gravity="top"
-        android:hint="@string/Desc"
-        android:fitsSystemWindows="true"
-        android:breakStrategy="balanced"
-        android:inputType="textMultiLine"
-        android:singleLine="false"
-        android:padding="5dp" />
+        <EditText
+            android:id="@+id/Descicao"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:gravity="top"
+            android:hint="@string/Desc"
+            android:fitsSystemWindows="true"
+            android:breakStrategy="balanced"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:padding="5dp" />
 
 
     </LinearLayout>
