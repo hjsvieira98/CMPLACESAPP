@@ -2,11 +2,25 @@ package com.example.cmplacesapp.retrofit
 
 import retrofit2.Call
 import retrofit2.http.*
+import java.text.SimpleDateFormat
 
 
 interface EndPoints {
 
+        @FormUrlEncoded
+        @POST("user/login")
+        fun Login(@Field("username") username: String?,@Field("password") password: String?): Call<User>
+
     @FormUrlEncoded
-    @POST("user/login")
-    fun Login(@Field("username") username: String?,@Field("password") password: String?): Call<User>
+    @POST("event/insert")
+    fun InsertIncidente(@Field("title") title: String?, @Field("description") description: String?,
+                        @Field("latitude") latitude: String?, @Field("longitude") longitude: String?, @Field("image") image: String?,
+                        @Field("user_id") user_id: Int?
+    ): Call<Incidentes>
+
+    @GET("event/get")
+    fun getIncidents(): Call<List<Incidentes>>
+    @FormUrlEncoded
+    @POST("event/update")
+    fun UpdateIncidente(@Field("id") id: Int?,@Field("title") title: String?,@Field("description") description: String?): Call<Incidentes>
 }
