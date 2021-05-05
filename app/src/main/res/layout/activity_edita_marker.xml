@@ -57,8 +57,8 @@
             android:background="@drawable/shape2"
             android:backgroundTint="#E40404"
             android:text="Elimina Incidente"
-            android:onClick="editMarker"
             android:textColor="#FFFFFF"
+            android:onClick="deleteMarker"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

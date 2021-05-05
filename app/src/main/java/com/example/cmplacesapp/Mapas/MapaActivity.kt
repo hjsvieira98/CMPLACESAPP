@@ -9,12 +9,22 @@ import android.graphics.BitmapFactory
 import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import com.example.cmplacesapp.LocalDB.AppDatabase
+import com.example.cmplacesapp.LocalDB.Notes
 import com.example.cmplacesapp.Notas.EditNotas
 import com.example.cmplacesapp.R
+import com.example.cmplacesapp.RecycleAddapter.CustomAdapter
 import com.example.cmplacesapp.retrofit.EndPoints
 import com.example.cmplacesapp.retrofit.Incidentes
 import com.example.cmplacesapp.retrofit.ServiceBuilder
@@ -32,82 +42,67 @@ import retrofit2.Response
 
 internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var mMap: GoogleMap
-    private lateinit var marker: Marker
+    private var mMap: GoogleMap? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa)
+        title = "Mapa";
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.filtermenu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.filter -> {
+                FilterFragment().filter().show(supportFragmentManager)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
             return
         }
-        val sharedPref = getSharedPreferences("AUTH", Context.MODE_PRIVATE) ?: return
-        val user_id = sharedPref.getString("user_id","0")
-        val request = ServiceBuilder.buildService(EndPoints::class.java)
-        val call = request.getIncidents();
-        call.enqueue(object : Callback<List<Incidentes>> {
-            override fun onResponse(call: Call<List<Incidentes>>, response: Response<List<Incidentes>>) {
 
-                response.body()?.forEach { incident ->
-                    var icon =  BitmapFactory.decodeResource(resources,R.drawable.makervermelha)
-                    if(user_id?.toInt() != incident.user_id){
-                        icon = BitmapFactory.decodeResource(resources,R.drawable.markerazul)
-                    }
-                    if(incident.latitude != null && incident.longitude != null){
-                        createMarker(incident.latitude.toDouble(),
-                            incident.longitude.toDouble(),
-                            incident.title,
-                            incident.description,
-                            incident.image,
-                            googleMap,
-                            icon,
-                            incident
-                        )
-                    }
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<List<Incidentes>>, t: Throwable) {
-                Toast.makeText(this@MapaActivity, "${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-        mMap.setMyLocationEnabled(true);
-        mMap.setOnMarkerClickListener { marker ->
+        mMap!!.isMyLocationEnabled = true;
+        mMap!!.setOnMarkerClickListener { marker ->
             var incidente = marker?.tag as Incidentes;
             var title = marker?.title;
             var Description = marker?.snippet
             val intent = Intent(this, EditaMarker::class.java)
-            intent.putExtra("ID",  incidente.id);
-            intent.putExtra("Image",  incidente.image);
-            intent.putExtra("Title",title);
-            intent.putExtra("Description",Description);
-            intent.putExtra("user_id",  incidente.user_id);
+            intent.putExtra("ID", incidente.id.toString());
+            intent.putExtra("Image", incidente.image);
+            intent.putExtra("Title", title);
+            intent.putExtra("Description", Description);
+            intent.putExtra("user_id", incidente.user_id);
             this.startActivity(intent)
             true
         }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-              // Got last known location. In some rare situations this can be null.
-                location?.latitude?.let { goToLocationZoom(it,location.longitude,15f) }
-            }
-
+        getMarkers()
 
     }
-    private fun goToLocationZoom(
-        lat: Double,
-        lng: Double,
-        zoom: Float
-    ) {
+
+    private fun goToLocationZoom(lat: Double, lng: Double, zoom: Float) {
         val ll = LatLng(lat, lng)
         val cameraPosition = CameraPosition.Builder()
             .target(ll)
@@ -115,13 +110,12 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
             .bearing(45f)
             .tilt(60f)
             .build()
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        mMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
-     fun novoIncidenteF(view: View){
-           val EntraNovoIncidente = Intent(this, NovoIncidente::class.java).apply {
-                     }
 
-                       startActivity(EntraNovoIncidente)
+    fun novoIncidenteF(view: View) {
+        val EntraNovoIncidente = Intent(this, NovoIncidente::class.java).apply {}
+        startActivity(EntraNovoIncidente)
     }
 
     private fun createMarker(
@@ -129,7 +123,6 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         longitude: Double,
         title: String?,
         snippet: String?,
-        image: String?,
         map: GoogleMap?,
         icon: Bitmap,
         incidentes: Incidentes
@@ -150,4 +143,94 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         return marker
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (mMap != null) {
+            getMarkers();
+        }
+    }
+
+    fun getMarkers() {
+
+        mMap!!.clear();
+        val sharedPref = getSharedPreferences("AUTH", Context.MODE_PRIVATE) ?: return
+        val user_id = sharedPref.getString("user_id", "0")
+        val request = ServiceBuilder.buildService(EndPoints::class.java)
+        val call = request.getIncidents();
+        val radius = 0;
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            return
+        }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.latitude?.let { goToLocationZoom(it, location.longitude, 15f) }
+
+                call.enqueue(object : Callback<List<Incidentes>> {
+                    override fun onResponse(
+                        call: Call<List<Incidentes>>,
+                        response: Response<List<Incidentes>>
+                    ) {
+
+                        response.body()?.forEach { incident ->
+                            var icon =
+                                BitmapFactory.decodeResource(resources, R.drawable.markerred)
+                            if (user_id?.toInt() != incident.user_id) {
+                                icon =
+                                    BitmapFactory.decodeResource(resources, R.drawable.markerblue)
+                            }
+                            if (incident.latitude != null && incident.longitude != null) {
+                                if (radius != 0) {
+                                    val locationA = Location("me")
+                                    Log.e("Teste",location!!.latitude.toString())
+                                    locationA.latitude = location!!.latitude
+                                    locationA.longitude = location!!.longitude
+                                    val locationB = Location("marker")
+
+                                    locationB.latitude = incident.latitude.toDouble()
+                                    locationB.longitude = incident.longitude.toDouble()
+
+                                    val distance: Float = locationA.distanceTo(locationB)
+                                    if (distance < radius) {
+                                        createMarker(
+                                            incident.latitude.toDouble(),
+                                            incident.longitude.toDouble(),
+                                            incident.title,
+                                            incident.description,
+                                            mMap,
+                                            icon,
+                                            incident
+                                        )
+                                    }
+                                } else {
+                                    createMarker(
+                                        incident.latitude.toDouble(),
+                                        incident.longitude.toDouble(),
+                                        incident.title,
+                                        incident.description,
+                                        mMap,
+                                        icon,
+                                        incident
+                                    )
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    override fun onFailure(call: Call<List<Incidentes>>, t: Throwable) {
+                        Toast.makeText(this@MapaActivity, "${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+    }
 }

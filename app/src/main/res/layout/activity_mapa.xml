@@ -4,7 +4,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".Notas.Notas">
+tools:context=".Notas.Notas"
+    >
 
  <fragment xmlns:android="http://schemas.android.com/apk/res/android"
      xmlns:tools="http://schemas.android.com/tools"
@@ -14,18 +15,18 @@ tools:context=".Notas.Notas">
      tools:context=".Mapas.MapaActivity"
      android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-<com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="20dp"
-    android:onClick="novoIncidenteF"
-    android:src="@android:drawable/ic_input_add"
-    app:backgroundTint="@color/address"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+ <com.google.android.material.floatingactionbutton.FloatingActionButton
+     android:id="@+id/fab"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_alignParentRight="true"
+     android:layout_marginEnd="16dp"
+     android:layout_marginBottom="20dp"
+     android:onClick="novoIncidenteF"
+     android:src="@android:drawable/ic_input_add"
+     app:backgroundTint="@color/color5"
+     app:layout_constraintBottom_toBottomOf="parent"
+     app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

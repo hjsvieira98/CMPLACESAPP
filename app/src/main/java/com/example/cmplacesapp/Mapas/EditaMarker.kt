@@ -33,7 +33,7 @@ class EditaMarker : AppCompatActivity() {
         var Title =    intent.getStringExtra("Title")
         var Description =    intent.getStringExtra("Description")
         var Image =    intent.getStringExtra("Image")
-        ID  =    intent.getStringExtra("id").toString()
+        ID  =    intent.getStringExtra("ID").toString()
         var editTextTitle = findViewById<EditText>(R.id.Title)
         var editTextDescription= findViewById<EditText>(R.id.Description)
         var editImage = findViewById<ImageView>(R.id.Imagem)
@@ -53,41 +53,50 @@ class EditaMarker : AppCompatActivity() {
     fun editMarker(){
 
         val title = findViewById<EditText>(R.id.Title).text;
-        val description = findViewById<EditText>(R.id.Description   ).text;
+        val description = findViewById<EditText>(R.id.Description).text;
         val request = ServiceBuilder.buildService(EndPoints::class.java)
         val call = request.UpdateIncidente(ID?.toInt(),title.toString(),description.toString())
-        call.enqueue(object : Callback<Incidentes> {
-            override fun onResponse(call: Call<Incidentes>, response: Response<Incidentes>) {
+        call.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
                 if (response.isSuccessful){
-                    val c: Incidentes = response.body()!!
+                    val c: Int = response.body()!!
                     MotionToast.darkToast(this@EditaMarker,"Sucesso","Marcador editado com sucesso",
                             MotionToast.TOAST_SUCCESS,
                             MotionToast.GRAVITY_BOTTOM,
                             MotionToast.LONG_DURATION,
                             ResourcesCompat.getFont(this@EditaMarker,R.font.helvetica_regular))
 
-                }else
-                {
-                    if (response.code() == 403 && response.message() == "login_fail") {
-                        MotionToast.darkToast(this@EditaMarker,"Erro","Problema de conexão ao servidor",
-                                MotionToast.TOAST_ERROR,
-                                MotionToast.GRAVITY_BOTTOM,
-                                MotionToast.LONG_DURATION,
-                                ResourcesCompat.getFont(this@EditaMarker,R.font.helvetica_regular))
-                    } else {
-                        MotionToast.darkToast(this@EditaMarker,"Erro","Palavra pass ou utilizador errados",
-                                MotionToast.TOAST_ERROR,
-                                MotionToast.GRAVITY_BOTTOM,
-                                MotionToast.LONG_DURATION,
-                                ResourcesCompat.getFont(this@EditaMarker,R.font.helvetica_regular))
-                    }
                 }
             }
 
-            override fun onFailure(call: Call<Incidentes>, t: Throwable) {
+            override fun onFailure(call: Call<Int>, t: Throwable) {
                 Toast.makeText(this@EditaMarker, "${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
 
+    }
+    fun deleteMarker(view:View){
+        val request = ServiceBuilder.buildService(EndPoints::class.java)
+        val call = request.deleteIncidente(ID?.toInt())
+        call.enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful){
+                    val c: Int = response.body()!!
+                    if(c == 1){
+                        MotionToast.darkToast(this@EditaMarker,"Sucesso","Marcador eliminado com sucesso",
+                                MotionToast.TOAST_DELETE,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(this@EditaMarker,R.font.helvetica_regular))
+                        finish()
+                    }
+
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+                Toast.makeText(this@EditaMarker, "${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

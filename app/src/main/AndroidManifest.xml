@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CMPLACESAPP"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Mapas.EditaMarker"></activity>
+        <activity android:name=".Mapas.BottomSheetDialogFragment"></activity>
+        <activity android:name=".Mapas.EditaMarker" />
         <activity android:name=".Mapas.NovoIncidente" />
         <activity android:name=".Notas.EditNotas" />
         <activity android:name=".Notas.AddNotas" />

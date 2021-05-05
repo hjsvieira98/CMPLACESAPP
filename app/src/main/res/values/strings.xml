@@ -7,5 +7,14 @@
     <string name="Title">Titulo</string>
     <string name="Desc">Descrição</string>
     <string name="Token">Token</string>
+    <string name="filter_radius">Escolha o raio em que quer pesquisar</string>
+    <string name="filter_other">Outro</string>
+    <string name="filter_checkbox_4">Obras</string>
+    <string name="filter_checkbox_3">Acidente</string>
+    <string name="filter_checkbox_2">Lixo</string>
+    <string name="filter_checkbox_1">Nova imagem</string>
+    <string name="filter_title">Utilize o um filtro para o ajudar</string>
+    <string name="menu">menu</string>
+    <string name="NomeUser">Humberto Vieira</string>
 
 </resources>

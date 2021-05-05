@@ -15,12 +15,17 @@ interface EndPoints {
     @POST("event/insert")
     fun InsertIncidente(@Field("title") title: String?, @Field("description") description: String?,
                         @Field("latitude") latitude: String?, @Field("longitude") longitude: String?, @Field("image") image: String?,
-                        @Field("user_id") user_id: Int?
+                        @Field("user_id") user_id: Int?,@Field("tipoIncidente") tipoIncidente: String?
     ): Call<Incidentes>
 
     @GET("event/get")
     fun getIncidents(): Call<List<Incidentes>>
+
     @FormUrlEncoded
     @POST("event/update")
-    fun UpdateIncidente(@Field("id") id: Int?,@Field("title") title: String?,@Field("description") description: String?): Call<Incidentes>
+    fun UpdateIncidente(@Field("id") id: Int?,@Field("title") title: String?,@Field("description") description: String?): Call<Int>
+
+    @FormUrlEncoded
+    @POST("event/delete")
+    fun deleteIncidente(@Field("id") id: Int?): Call<Int>
 }

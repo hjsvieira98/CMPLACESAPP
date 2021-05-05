@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,24 +12,26 @@
         android:id="@+id/imageView4"
         android:layout_width="match_parent"
         android:layout_height="161dp"
-        tools:layout_editor_absoluteX="-42dp"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="58dp"
         tools:src="@tools:sample/backgrounds/scenic" />
 
     <EditText
         android:id="@+id/incidentTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
         android:hint="Incidente"
         android:inputType="text"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="343dp" />
+        app:layout_constraintBottom_toTopOf="@+id/incidentDescription"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
 
     <EditText
         android:id="@+id/incidentDescription"
         android:layout_width="fill_parent"
         android:layout_height="150dp"
-        tools:ignore="MissingConstraints"
+        android:layout_marginBottom="48dp"
         android:breakStrategy="balanced"
         android:fitsSystemWindows="true"
         android:gravity="top"
@@ -37,22 +39,32 @@
         android:inputType="textMultiLine"
         android:padding="5dp"
         android:singleLine="false"
-        tools:layout_editor_absoluteX="-16dp" />
+        app:layout_constraintBottom_toTopOf="@+id/sendIncidentButton"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
         android:id="@+id/sendIncidentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="44dp"
-        android:onClick="saveIncident"
+        android:layout_marginBottom="40dp"
         android:elevation="4dp"
+        android:onClick="saveIncident"
         android:paddingLeft="70dp"
         android:paddingRight="70dp"
         android:text="Reportar"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="96dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
-</LinearLayout>
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/incidentDescription"
+        app:layout_constraintTop_toBottomOf="@+id/incidentTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
