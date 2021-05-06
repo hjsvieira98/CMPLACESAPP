@@ -1,11 +1,12 @@
 package com.example.cmplacesapp.Notas
 
+import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +15,11 @@ import com.example.cmplacesapp.LocalDB.AppDatabase
 import com.example.cmplacesapp.LocalDB.Notes
 import com.example.cmplacesapp.R
 import com.example.cmplacesapp.RecycleAddapter.CustomAdapter
+import www.sanju.motiontoast.MotionToast
 
 
-class Notas : AppCompatActivity() {
+class Notas : AppCompatActivity(),
+    CustomAdapter.CustomAdapterListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notas)
@@ -24,13 +27,11 @@ class Notas : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java, "DBLocal"
         ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
-
         val recycle = findViewById<RecyclerView>(R.id.Recyclerview)
-
         recycle.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = CustomAdapter(db?.notesDao()?.getAll() as ArrayList<Notes>)
 
+            adapter = context?.let { CustomAdapter(db?.notesDao()?.getAll() as ArrayList<Notes>, this@Notas ,it) }
             EmptyState();
             db.close();
         }
@@ -39,10 +40,10 @@ class Notas : AppCompatActivity() {
 
     fun addNotas(view: View){
         val AddNotas = Intent(this, AddNotas()::class.java).apply {
-
         }
         startActivity(AddNotas)
     }
+
     private fun swipeToDelete(recyclerView: RecyclerView){
 
         val swipeHandler = object : SwipeToDeleteCallback(this) {
@@ -53,8 +54,13 @@ class Notas : AppCompatActivity() {
                     AppDatabase::class.java, "DBLocal"
                 ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
                 val Nota = adapter.removeAt(viewHolder.adapterPosition)
-                println(Nota);
+
                 db.notesDao().Delete(Nota)
+                MotionToast.darkToast(this@Notas,"Sucesso","Nota apagada com sucesso",
+                        MotionToast.TOAST_DELETE,
+                        MotionToast.GRAVITY_BOTTOM,
+                        MotionToast.LONG_DURATION,
+                        ResourcesCompat.getFont(this@Notas,R.font.helvetica_regular))
                 EmptyState();
 
             }
@@ -73,7 +79,8 @@ class Notas : AppCompatActivity() {
         val recycle = findViewById<RecyclerView>(R.id.Recyclerview)
         recycle.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = CustomAdapter(db?.notesDao()?.getAll() as ArrayList<Notes>)
+            adapter = context?.let { CustomAdapter(db?.notesDao()?.getAll() as ArrayList<Notes>, this@Notas ,it) }
+
             EmptyState();
         }
         swipeToDelete(recycle);
@@ -90,5 +97,19 @@ class Notas : AppCompatActivity() {
             recycle.visibility = View.VISIBLE;
             empty.visibility = View.GONE;
         }
+    }
+
+    override fun onNoteSelected(note: Notes?) {
+        var id = note?.uid;
+        var title = note?.Title;
+        var Description = note?.Description
+        var DateAdd = note?.DateAdd
+        val intent = Intent(this, EditNotas::class.java)
+        intent.putExtra("Id",id.toString());
+        intent.putExtra("Title",title);
+        intent.putExtra("Description",Description);
+        intent.putExtra("DateAdd",DateAdd);
+        startActivity(intent)
+
     }
 }

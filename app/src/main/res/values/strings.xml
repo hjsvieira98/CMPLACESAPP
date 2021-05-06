@@ -6,5 +6,6 @@
     <string name="Logout">Logout</string>
     <string name="Title">Titulo</string>
     <string name="Desc">Descrição</string>
+    <string name="Token">Token</string>
 
 </resources>

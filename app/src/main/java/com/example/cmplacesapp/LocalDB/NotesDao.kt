@@ -1,9 +1,6 @@
 package com.example.cmplacesapp.LocalDB
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface NotesDao {
@@ -13,6 +10,8 @@ interface NotesDao {
       fun insertAll(vararg note: Notes)
     @Delete
       fun Delete(vararg note: Notes)
+    @Update
+     fun Update(vararg note: Notes)
 
 
 }

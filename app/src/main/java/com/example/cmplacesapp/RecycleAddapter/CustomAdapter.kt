@@ -1,5 +1,6 @@
 package com.example.cmplacesapp.RecycleAddapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cmplacesapp.LocalDB.Notes
 import com.example.cmplacesapp.R
 
-class CustomAdapter(private val dataSet: ArrayList<Notes>) :
-    RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
-
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class CustomAdapter(dataSet: MutableList<Notes>, listener: CustomAdapterListener, context: Context) : RecyclerView.Adapter<CustomAdapter.ViewHolder>(){
+    private val  listener: CustomAdapterListener
+    private var dataSet: MutableList<Notes>;
+    init{
+        this.listener = listener
+        this.dataSet = dataSet
+    }
+ inner class ViewHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
         val DataAdd: TextView
         val Title: TextView
         val Desc: TextView
@@ -25,6 +26,9 @@ class CustomAdapter(private val dataSet: ArrayList<Notes>) :
             DataAdd = view.findViewById(R.id.TimeAdd)
             Title = view.findViewById(R.id.Title)
             Desc = view.findViewById(R.id.Desc)
+            view.setOnClickListener {
+                listener.onNoteSelected(dataSet[adapterPosition])
+            }
         }
     }
 
@@ -51,9 +55,12 @@ class CustomAdapter(private val dataSet: ArrayList<Notes>) :
         dataSet!!.removeAt(position)
         notifyItemRemoved(position)
         return note
+     }
 
+
+    interface CustomAdapterListener {
+        fun onNoteSelected(note: Notes?)
     }
-
     fun getCount():Int{
       return  dataSet.size;
     }

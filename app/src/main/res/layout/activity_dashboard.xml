@@ -198,6 +198,7 @@
             android:layout_marginBottom="16dp"
             android:background="@color/cardColor"
             app:cardCornerRadius="8dp"
+            android:onClick="Logout"
             app:cardElevation="6dp">
 
             <LinearLayout

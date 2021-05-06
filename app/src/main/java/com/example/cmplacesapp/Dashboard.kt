@@ -1,9 +1,11 @@
 package com.example.cmplacesapp
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.cardview.widget.CardView
 import com.example.cmplacesapp.Mapas.MapaActivity
 import com.example.cmplacesapp.Notas.Notas
@@ -29,5 +31,17 @@ class Dashboard : AppCompatActivity() {
 
         }
         startActivity(Notas)
+    }
+    fun Logout(view: View){
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit().clear()) {
+            commit()
+            apply()
+        }
+        val Login = Intent(this, MainActivity::class.java).apply {
+        }
+        startActivity(Login)
+        finish()
+
     }
 }
