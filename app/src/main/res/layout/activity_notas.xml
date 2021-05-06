@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Não existem notas, por-favor adicione uma nota"
+            android:text="@string/Texto_EmptyState"
             android:textSize="15sp"
             android:fontFamily="@font/montserrat_bold"
             android:textAlignment="center"

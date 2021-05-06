@@ -4,7 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Mapas.NovoIncidente">
+    tools:context=".Mapas.NovoIncidente"
+    android:orientation="vertical">
 
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="161dp"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="58dp"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <EditText
+        android:id="@+id/incidentTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/Titulo_Incidente"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/incidentDescription"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/incidentDescription"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="48dp"
+        android:breakStrategy="balanced"
+        android:fitsSystemWindows="true"
+        android:gravity="top"
+        android:hint="@string/descricao_incidente"
+        android:inputType="textMultiLine"
+        android:padding="5dp"
+        android:singleLine="false"
+        app:layout_constraintBottom_toTopOf="@+id/sendIncidentButton"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/sendIncidentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:elevation="4dp"
+        android:onClick="saveIncident"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:text="@string/Texto_btnreportar"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/incidentDescription"
+        app:layout_constraintTop_toBottomOf="@+id/incidentTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

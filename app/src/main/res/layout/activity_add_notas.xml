@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:background="@drawable/shape2"
-        android:text="Gravar"
+        android:text="@string/btn_edita_notas"
         android:onClick="guardaNota"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
