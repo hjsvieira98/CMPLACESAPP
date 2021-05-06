@@ -64,6 +64,7 @@ class Dashboard : AppCompatActivity(), SensorEventListener {
             findViewById<TextView>(R.id.Temperature).setTextColor(R.color.hot)
         if(event.values[0] < 0)
             findViewById<TextView>(R.id.Temperature).setTextColor(R.color.cold)
+
         findViewById<TextView>(R.id.Temperature).text = event.values[0].toString() + "Cº "
     }
 
