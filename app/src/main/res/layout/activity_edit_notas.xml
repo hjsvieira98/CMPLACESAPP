@@ -44,7 +44,7 @@
         android:layout_marginBottom="24dp"
         android:background="@drawable/shape2"
         android:text="Gravar"
-        android:onClick="guardaNota"
+        android:onClick="saveNote"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

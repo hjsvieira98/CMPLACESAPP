@@ -6,3 +6,4 @@
         android:id="@+id/map"
         tools:context=".Mapas.MapaActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
+
