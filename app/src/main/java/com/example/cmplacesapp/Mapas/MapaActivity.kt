@@ -50,16 +50,14 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback, SensorEve
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mMap: GoogleMap? = null;
     private lateinit var sensorManager: SensorManager
-    private var pressure: Sensor? = null
-    private var cpuTemperature: Sensor? = null
+    private var light: Sensor? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa)
         title = "Mapa";
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-        cpuTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE)
+        light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -168,7 +166,7 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback, SensorEve
         if (mMap != null) {
             getMarkers();
         }
-        sensorManager.registerListener(this, pressure, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(this, light, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     fun getMarkers() {
