@@ -30,11 +30,7 @@ class FilterFragment : BottomSheetDialogFragment() {
     ): View? {
         if (savedInstanceState != null) dismiss()
         val view = inflater.inflate(R.layout.filter_fragment, container, false)
-        val preferences: SharedPreferences = context!!.getSharedPreferences(
-                "FILTERMAP",
-                Context.MODE_PRIVATE
-        )
-
+        val preferences: SharedPreferences = context!!.getSharedPreferences("FILTERMAP", Context.MODE_PRIVATE)
         view.findViewById<CheckBox>(R.id.checkbox_1).isChecked = preferences.getBoolean("0", true)
         view.findViewById<CheckBox>(R.id.checkbox_2).isChecked = preferences.getBoolean("1", true)
         view.findViewById<CheckBox>(R.id.checkbox_3).isChecked = preferences.getBoolean("2", true)
