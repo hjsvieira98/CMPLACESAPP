@@ -3,9 +3,14 @@ package com.example.cmplacesapp.Mapas
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
@@ -40,15 +45,21 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
+@Suppress("DEPRECATION")
+internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mMap: GoogleMap? = null;
-
+    private lateinit var sensorManager: SensorManager
+    private var pressure: Sensor? = null
+    private var cpuTemperature: Sensor? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa)
         title = "Mapa";
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        cpuTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -71,6 +82,8 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        val sharedPref = getSharedPreferences("AUTH", Context.MODE_PRIVATE) ?: return
+        val user_id = sharedPref.getString("user_id", "0")
         mMap = googleMap
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -86,16 +99,23 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap!!.isMyLocationEnabled = true;
         mMap!!.setOnMarkerClickListener { marker ->
+
             var incidente = marker?.tag as Incidentes;
-            var title = marker?.title;
-            var Description = marker?.snippet
-            val intent = Intent(this, EditaMarker::class.java)
-            intent.putExtra("ID", incidente.id.toString());
-            intent.putExtra("Image", incidente.image);
-            intent.putExtra("Title", title);
-            intent.putExtra("Description", Description);
-            intent.putExtra("user_id", incidente.user_id);
-            this.startActivity(intent)
+
+                    var title = marker?.title;
+                    var Description = marker?.snippet
+                    val intent = Intent(this, EditaMarker::class.java)
+                    intent.putExtra("ID", incidente.id.toString());
+                    intent.putExtra("Image", incidente.image);
+                    intent.putExtra("Title", title);
+                    intent.putExtra("Description", Description);
+                    intent.putExtra("user_id", incidente.user_id.toString());
+                    intent.putExtra("tipoIncidente", incidente.tipoIncidente);
+                    this.startActivity(intent)
+
+
+
+
             true
         }
         getMarkers()
@@ -148,17 +168,23 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         if (mMap != null) {
             getMarkers();
         }
+        sensorManager.registerListener(this, pressure, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     fun getMarkers() {
 
         mMap!!.clear();
         val sharedPref = getSharedPreferences("AUTH", Context.MODE_PRIVATE) ?: return
+        val preferences: SharedPreferences = getSharedPreferences("FILTERMAP", Context.MODE_PRIVATE)
+        val checkbox1 = preferences.getBoolean("0", true)
+        val checkbox2 = preferences.getBoolean("1", true)
+        val checkbox3 = preferences.getBoolean("2", true)
+        val checkbox4 = preferences.getBoolean("3", true)
         val user_id = sharedPref.getString("user_id", "0")
         val request = ServiceBuilder.buildService(EndPoints::class.java)
-        val call = request.getIncidents();
-        val radius = 0;
-        if (ActivityCompat.checkSelfPermission(
+        val call = request.getIncidents(checkbox1,checkbox2,checkbox3,checkbox4);
+        val radius = preferences.getInt("radius",0);
+       if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -180,6 +206,8 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     ) {
 
                         response.body()?.forEach { incident ->
+
+
                             var icon =
                                 BitmapFactory.decodeResource(resources, R.drawable.markerred)
                             if (user_id?.toInt() != incident.user_id) {
@@ -232,5 +260,32 @@ internal class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 })
             }
+    }
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        // Do something here if sensor accuracy changes.
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event!!.values[0] < 20000.0) {
+            mMap!!.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this@MapaActivity,
+                            R.raw.map_in_night
+                    )
+            );
+        } else {
+            mMap!!.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this@MapaActivity,
+                            R.raw.map_in_day
+                    )
+            );
+        }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 }

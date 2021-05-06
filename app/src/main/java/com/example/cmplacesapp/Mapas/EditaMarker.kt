@@ -1,28 +1,20 @@
 package com.example.cmplacesapp.Mapas
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import com.example.cmplacesapp.Dashboard
 import com.example.cmplacesapp.R
 import com.example.cmplacesapp.retrofit.EndPoints
-import com.example.cmplacesapp.retrofit.Incidentes
 import com.example.cmplacesapp.retrofit.ServiceBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import www.sanju.motiontoast.MotionToast
-import java.io.ByteArrayOutputStream
 
 class EditaMarker : AppCompatActivity() {
     private  val sharedPreferencesName: String = "AUTH"
@@ -30,9 +22,12 @@ class EditaMarker : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edita_marker)
+        val Tipos = arrayOf<String>("Acidente", "Lixo", "Incendio")
         var Title =    intent.getStringExtra("Title")
         var Description =    intent.getStringExtra("Description")
         var Image =    intent.getStringExtra("Image")
+        var tipoIncidente =    intent.getStringExtra("tipoIncidente")
+        var idUser =    intent.getStringExtra("user_id")
         ID  =    intent.getStringExtra("ID").toString()
         var editTextTitle = findViewById<EditText>(R.id.Title)
         var editTextDescription= findViewById<EditText>(R.id.Description)
@@ -45,6 +40,24 @@ class EditaMarker : AppCompatActivity() {
         var btn = findViewById<Button>(R.id.BtnEditIncidente);
         btn.setOnClickListener {
             editMarker()
+        }
+        val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, Tipos)
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        findViewById<Spinner>(R.id.spinner)!!.setAdapter(aa)
+        findViewById<Spinner>(R.id.spinner).setSelection(Tipos.indexOf(tipoIncidente))
+        val sharedPref = getSharedPreferences("AUTH", Context.MODE_PRIVATE) ?: return
+        val user_id = sharedPref.getString("user_id", "0")
+        if(user_id != idUser){
+            val b = findViewById<Button>(R.id.BtnDelete)
+
+            val b1 = findViewById<Button>(R.id.BtnEditIncidente)
+            val b2 = findViewById<Spinner>(R.id.spinner)
+            b.visibility = View.GONE
+            b1.visibility = View.GONE
+            b2.isEnabled = false
+            editTextTitle.isEnabled = false;
+            editTextDescription.isEnabled = false;
+
         }
 
 
@@ -65,6 +78,7 @@ class EditaMarker : AppCompatActivity() {
                             MotionToast.GRAVITY_BOTTOM,
                             MotionToast.LONG_DURATION,
                             ResourcesCompat.getFont(this@EditaMarker,R.font.helvetica_regular))
+                    finish()
 
                 }
             }

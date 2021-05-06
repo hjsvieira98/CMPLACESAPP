@@ -17,9 +17,10 @@ interface EndPoints {
                         @Field("latitude") latitude: String?, @Field("longitude") longitude: String?, @Field("image") image: String?,
                         @Field("user_id") user_id: Int?,@Field("tipoIncidente") tipoIncidente: String?
     ): Call<Incidentes>
-
-    @GET("event/get")
-    fun getIncidents(): Call<List<Incidentes>>
+    @FormUrlEncoded
+    @POST("event/get")
+    fun getIncidents(@Field("lixo") lixo: Boolean?, @Field("acidente") acidente: Boolean?,
+                     @Field("obras") obras: Boolean?, @Field("outros") outros: Boolean?): Call<List<Incidentes>>
 
     @FormUrlEncoded
     @POST("event/update")

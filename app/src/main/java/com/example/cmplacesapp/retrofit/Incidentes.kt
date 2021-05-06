@@ -9,5 +9,6 @@ data class Incidentes(
     val latitude: String,
     val longitude: String,
     val image: String,
-    val user_id: Int
+    val user_id: Int,
+    val tipoIncidente:String
     )

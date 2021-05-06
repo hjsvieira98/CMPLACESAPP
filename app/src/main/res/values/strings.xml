@@ -16,5 +16,16 @@
     <string name="filter_title">Utilize o um filtro para o ajudar</string>
     <string name="menu">menu</string>
     <string name="NomeUser">Humberto Vieira</string>
+    <string name="Titulo_Incidente">Titulo Incidente</string>
+    <string name="descricao_incidente">Descrição Incidente</string>
+    <string name="Texto_btnreportar">Reportar Incidente</string>
+    <string name="Texto_EmptyState">Não existem notas, por-favor adicione uma nota\"</string>
+    <string name="pw">Palavra-passe</string>
+    <string name="utilizador">Utilizador</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_entraNotas">Entrar nas notas</string>
+    <string name="btn_elimina_incidente">Eliminar incidente</string>
+    <string name="btn_edita_incidente">Editar Incidente</string>
+    <string name="btn_edita_notas">Gravar</string>
 
 </resources>
