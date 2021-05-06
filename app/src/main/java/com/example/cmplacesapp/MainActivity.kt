@@ -2,7 +2,6 @@ package com.example.cmplacesapp
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,22 +15,21 @@ import com.example.cmplacesapp.Notas.Notas
 import com.example.cmplacesapp.retrofit.EndPoints
 import com.example.cmplacesapp.retrofit.ServiceBuilder
 import com.example.cmplacesapp.retrofit.User
-import org.mindrot.jbcrypt.BCrypt
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import www.sanju.motiontoast.MotionToast
 
 class MainActivity : AppCompatActivity() {
-    private val sharedPrefFile = "UserLogado"
+    private  val sharedPreferencesName: String = "AUTH"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-        val sharedPref = this@MainActivity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = getSharedPreferences(sharedPreferencesName,Context.MODE_PRIVATE) ?: return
 
         val Token = sharedPref.getString(getString(R.string.Token),"")
-        if(Token!= ""){
+        if(Token != ""){
             val EntraDashBoard = Intent(this@MainActivity, Dashboard::class.java).apply {
             }
             startActivity(EntraDashBoard)
@@ -58,21 +56,38 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful){
                     val c: User = response.body()!!
-                    val sharedPref = this@MainActivity.getPreferences(Context.MODE_PRIVATE) ?: return
-                    with (sharedPref.edit()) {
-                        putString(getString(R.string.Token), c.Token)
-                        commit()
-                    }
-                    MotionToast.darkToast(this@MainActivity,"Sucesso","Login efetuado com sucesso",
-                        MotionToast.TOAST_SUCCESS,
-                        MotionToast.GRAVITY_BOTTOM,
-                        MotionToast.LONG_DURATION,
-                        ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
-                    val EntraDashBoard = Intent(this@MainActivity, Dashboard::class.java).apply {
+                    if(c.Token !=null){
+                         with (getSharedPreferences(sharedPreferencesName,Context.MODE_PRIVATE).edit()) {
+                            putString(getString(R.string.Token), c.Token)
+                            putString("user_id", c.id.toString())
+                            commit()
+                        }
+                        MotionToast.darkToast(this@MainActivity,"Sucesso","Login efetuado com sucesso",
+                            MotionToast.TOAST_SUCCESS,
+                            MotionToast.GRAVITY_BOTTOM,
+                            MotionToast.LONG_DURATION,
+                            ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                        val EntraDashBoard = Intent(this@MainActivity, Dashboard::class.java).apply {
+                        }
+
+                        startActivity(EntraDashBoard)
+                        finish()
+                    }else{
+                        if (response.code() == 403 && response.message() == "login_fail") {
+                            MotionToast.darkToast(this@MainActivity,"Erro","Problema de conexão ao servidor",
+                                MotionToast.TOAST_ERROR,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                        } else {
+                            MotionToast.darkToast(this@MainActivity,"Erro","Palavra pass ou utilizador errados",
+                                MotionToast.TOAST_ERROR,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(this@MainActivity,R.font.helvetica_regular))
+                        }
                     }
 
-                    startActivity(EntraDashBoard)
-                    finish()
                 }else
                 {
                     if (response.code() == 403 && response.message() == "login_fail") {

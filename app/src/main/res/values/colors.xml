@@ -29,4 +29,7 @@
     <color name="color3">#B05777</color>
     <color name="color4">#EEBE5C</color>
     <color name="color5">#8778E9</color>
+    <color name="hot">#C60303</color>
+    <color name="good">#75E307</color>
+    <color name="cold">#00C1BB</color>
 </resources>
